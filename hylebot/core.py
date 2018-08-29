@@ -1,41 +1,23 @@
 import hylebot.twitch
+import irc.bot
+import sys
+from hylebot.config import config
+from hylebot.database import Database
 
-class HyleMessage:
-    def __init__(self, time, sender, content, server, channel):
-        self.time = time
-        self.sender = sender
-        self.content = content
-        self.server = server
-        self.channel = channel
-    
-    def getTime(self):
-        return self.time
-
-    def getSender(self):
-        return self.sender
-    
-    def getContent(self):
-        return self.content
-    
-    def getServer(self):
-        return self.server
-
-    def getChannel(self):
-        return self.channel
-
-class HyleServer:
-    def __init__(self, server_type, server, port, name, channels, token):
-        self.server_type = server_type
-        self.server = server
-        self.port = port
-        self.name = name
-        self.channels = channels
-        self.token = token
+class Server:
+    def __init__(self):
+        self.server_type = config['CORE']['SERVER_TYPE']
+        self.host = config['SERVER']['HOST']
+        self.port = int(config['SERVER']['PORT'])
+        self.nickname = config['SERVER']['NICKNAME']
+        self.channels = config['SERVER']['CHANNELS']
+        self.token = config['SERVER']['TOKEN']
+        self.database = Database(config['DATABASE']['HOST'], config['DATABASE']['PORT'], config['DATABASE']['DB'])
 
     def connect(self):
-        if self.server_type == "twitch":
-            twitch = hylebot.twitch.HyleTwitchBot(self.server, self.port, self.name, self.channels[0], self.token)
-            twitch.start()
-            return 0
-        if self.server_type == "discord":
+        if self.server_type == "Twitch":
+            bot = hylebot.twitch.TwitchBot(self.host, self.port, self.nickname, self.channels, self.token, self.database)
+            bot.start()
+    
+        if self.server_type == "Discord":
             return 0
