@@ -23,26 +23,33 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
     
     def on_pubmsg(self, connection, event):
         print(event)
-        if (irc.strings.lower(event.source.nick) in self.mods):
-            self.do_command(event)
-
-    def do_command(self, event):
-        connection = self.connection
         message = event.arguments[0].split(" ", 2)
+        if (irc.strings.lower(event.source.nick) in self.mods):
+            self.do_command_mod(message)
+        else:
+            self.do_command(message)
+
+    def do_command_mod(self, message):
         command = message[0]
         
         if command == "!add" and len(message) > 2:
             if self.db.get(message[1]):
-                connection.privmsg(self.channel, "Command " + message[1] + " is updated.")
+                self.connection.privmsg(self.channel, "Command " + message[1] + " is updated.")
             else:
-                connection.privmsg(self.channel, "Command " + message[1] + " iss added.")
+                self.connection.privmsg(self.channel, "Command " + message[1] + " is added.")
             self.db.set(message[1], message[2])
         elif command == "!delete" and len(message) > 1:
-            connection.privmsg(self.channel, "Command " + message[1] + " is deleted.")
+            self.connection.privmsg(self.channel, "Command " + message[1] + " is deleted.")
             self.db.delete(message[1])
-        elif command.startswith("!"):
+        else:
+            self.do_command(message)
+
+    def do_command(self, message):
+        command = message[0]
+
+        if command.startswith("!"):
             if self.db.get(command):
-                connection.privmsg(self.channel, self.db.get(command))
+                self.connection.privmsg(self.channel, self.db.get(command))
 
                 
         
