@@ -23,11 +23,13 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
     
     def on_pubmsg(self, connection, event):
         print(event)
-        message = event.arguments[0].split(" ", 2)
-        if (irc.strings.lower(event.source.nick) in self.mods):
-            self.do_command_mod(message)
-        else:
-            self.do_command(message)
+
+        if event.arguments[0].startswith("!"):
+            message = event.arguments[0].split(" ", 2)
+            if (irc.strings.lower(event.source.nick) in self.mods):
+                self.do_command_mod(message)
+            else:
+                self.do_command(message)
 
     def do_command_mod(self, message):
         command = message[0]
