@@ -13,10 +13,11 @@ class Server:
         self.channels = config['SERVER']['CHANNELS']
         self.token = config['SERVER']['TOKEN']
         self.database = Database(config['DATABASE']['HOST'], config['DATABASE']['PORT'], config['DATABASE']['DB'])
+        self.mods = [mod.lower() for mod in config['SERVER']['MODS'].split(",")]
 
     def connect(self):
         if self.server_type == "Twitch":
-            bot = hylebot.twitch.TwitchBot(self.host, self.port, self.nickname, self.channels, self.token, self.database)
+            bot = hylebot.twitch.TwitchBot(self.host, self.port, self.nickname, self.channels, self.token, self.database, self.mods)
             bot.start()
     
         if self.server_type == "Discord":
