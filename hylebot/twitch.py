@@ -1,7 +1,9 @@
 import irc.bot
 import irc.strings
-import hylebot.osu
+import hylebot.config
 import hylebot.message
+import hylebot.osu
+import time
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
     def __init__(self, host, port, nickname, channel, token, database, mods):
@@ -52,6 +54,10 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         if command.startswith("!"):
             if self.db.get(command):
                 self.connection.privmsg(self.channel, self.db.get(command))
+
+    def convert_message(self, event):
+        return hylebot.message.Message(time.time(), event.source.nick, event.arguments[0], "Twitch", self.channel)
+        
 
                 
         
