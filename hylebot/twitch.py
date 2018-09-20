@@ -1,9 +1,8 @@
 import irc.bot
 import irc.strings
-import hylebot.config
-import hylebot.message
-import hylebot.osu
 import time
+from hylebot.osu import OsuApi
+from hylebot.message import Message
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
     def __init__(self, host, port, nickname, channel, token, database, mods):
@@ -29,11 +28,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         if event.arguments[0].startswith("!"):
             message = event.arguments[0].split(" ", 2)
             if (irc.strings.lower(event.source.nick) in self.mods):
-                self.do_command_mod(message)
+                self.do_command_mod(event, message)
             else:
-                self.do_command(message)
+                self.do_command(event, message)
 
-    def do_command_mod(self, message):
+    def do_command_mod(self, event, message):
         command = message[0]
         
         if command == "!add" and len(message) > 2:
@@ -46,17 +45,23 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             self.connection.privmsg(self.channel, "Command " + message[1] + " is deleted.")
             self.db.delete(message[1])
         else:
-            self.do_command(message)
+            self.do_command(event, message)
 
-    def do_command(self, message):
+    def do_command(self, event, message):
         command = message[0]
 
         if command.startswith("!"):
             if self.db.get(command):
                 self.connection.privmsg(self.channel, self.db.get(command))
 
+        osu_api = OsuApi()
+        converted_message = self.convert_message(event)
+        result = osu_api.process_message(converted_message)
+        if result:
+            self.connection.privmsg(self.channel, result)
+
     def convert_message(self, event):
-        return hylebot.message.Message(time.time(), event.source.nick, event.arguments[0], "Twitch", self.channel)
+        return Message(time.time(), event.source.nick, event.arguments[0], "Twitch", self.channel)
         
 
                 
