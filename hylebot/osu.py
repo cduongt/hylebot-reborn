@@ -1,10 +1,16 @@
 import json
 import requests
+from hylebot.config import config
 
 class OsuApi:
-    def __init__(self, api_key):
-        self.api_key = api_key
+    def __init__(self):
+        self.api_key = config['OSU']['API_kEY']
         self.api = "https://osu.ppy.sh/api/"
+
+    def process_message(self, message):
+        if self.is_beatmap(message.content):
+            return self.beatmap_info(self.is_beatmap(message.content))
+        return None
 
     def beatmap_info(self, beatmap_id):
         query = { "k": self.api_key, "s": beatmap_id}
@@ -26,9 +32,9 @@ class OsuApi:
         playcount = response_json['playcount']
         return "User " + username + " is rank " + rank + " with " + pp + " pp and " + playcount + " playcount." 
 
-def is_beatmap(message):
-    if "osu.ppy.sh/s/" in message:
-        for word in message.split():
-            if "osu.ppy.sh/s/" in word:
-                return word.split("/")[-1]
-    return None
+    def is_beatmap(self, line):
+        if "osu.ppy.sh/s/" in line:
+            for word in line.split():
+                if "osu.ppy.sh/s/" in word:
+                    return word.split("/")[-1]
+        return None
