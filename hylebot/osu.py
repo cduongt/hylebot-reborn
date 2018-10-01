@@ -20,7 +20,8 @@ class OsuApi:
         song_title = response_json['title']
         mapper = response_json['creator']
         bpm = response_json['bpm']
-        return artist_name + " - " + song_title + " by " + mapper + ", " + bpm + " BPM"
+        difficulty = response_json['difficultyrating']
+        return artist_name + " - " + song_title + " by " + mapper + ", " + bpm + " BPM, " + str(round(float(difficulty), 2)) + "*" 
 
     def user_info(self, user):
         query = { "k": self.api_key, "u": user}
