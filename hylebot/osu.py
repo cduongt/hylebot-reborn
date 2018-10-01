@@ -15,13 +15,15 @@ class OsuApi:
     def beatmap_info(self, beatmap_id):
         query = { "k": self.api_key, "b": beatmap_id}
         r = requests.post(self.api + "/get_beatmaps", params=query)
-        response_json = r.json()[0]
-        artist_name = response_json['artist']
-        song_title = response_json['title']
-        mapper = response_json['creator']
-        bpm = response_json['bpm']
-        difficulty = response_json['difficultyrating']
-        return artist_name + " - " + song_title + " by " + mapper + ", " + bpm + " BPM, " + str(round(float(difficulty), 2)) + "*"
+        if len(r.json()) > 0:
+            response_json = r.json()[0]
+            artist_name = response_json['artist']
+            song_title = response_json['title']
+            mapper = response_json['creator']
+            bpm = response_json['bpm']
+            difficulty = response_json['difficultyrating']
+            return artist_name + " - " + song_title + " by " + mapper + ", " + bpm + " BPM, " + str(round(float(difficulty), 2)) + "*"
+        return None
 
     def user_info(self, user):
         query = { "k": self.api_key, "u": user}
