@@ -4,7 +4,7 @@ from hylebot.config import config
 
 class OsuApi:
     def __init__(self):
-        self.api_key = config['OSU']['API_kEY']
+        self.api_key = config['OSU']['API_KEY']
         self.api = "https://osu.ppy.sh/api/"
 
     def process_message(self, message):
@@ -34,8 +34,8 @@ class OsuApi:
         return "User " + username + " is rank " + rank + " with " + pp + " pp and " + playcount + " playcount." 
 
     def is_beatmap(self, line):
-        if "osu.ppy.sh/s/" in line:
+        if "osu.ppy.sh/s/" or "osu.ppy.sh/beatmapsets/" in line:
             for word in line.split():
-                if "osu.ppy.sh/s/" in word:
+                if "osu.ppy.sh/s/" or "osu.ppy.sh/beatmapsets/" in word:
                     return word.split("/")[-1]
         return None
