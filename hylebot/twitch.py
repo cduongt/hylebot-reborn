@@ -32,6 +32,12 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             else:
                 self.do_command(event, message)
 
+        osu_api = OsuApi()
+        converted_message = self.convert_message(event)
+        result = osu_api.process_message(converted_message)
+        if result:
+            self.connection.privmsg(self.channel, result)
+
     def do_command_mod(self, event, message):
         command = message[0]
         
@@ -51,14 +57,11 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
         command = message[0]
 
         if command.startswith("!"):
+            if command == "!osurank":
+                osu_api = OsuApi()
+                self.connection.privmsg(self.channel, osu_api.user_rank())
             if self.db.get(command):
                 self.connection.privmsg(self.channel, self.db.get(command))
-
-        osu_api = OsuApi()
-        converted_message = self.convert_message(event)
-        result = osu_api.process_message(converted_message)
-        if result:
-            self.connection.privmsg(self.channel, result)
 
     def convert_message(self, event):
         return Message(time.time(), event.source.nick, event.arguments[0], "Twitch", self.channel)

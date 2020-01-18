@@ -12,8 +12,8 @@ class OsuApi:
             return self.beatmap_info(self.is_beatmap(message.content))
         return None
 
-    def beatmap_info(self, beat_ids):
-        query = { "k": self.api_key, "s": beat_ids[0], "b": beat_ids[1]}
+    def beatmap_info(self, beatmap_id):
+        query = { "k": self.api_key, "b": beatmap_id}
         r = requests.post(self.api + "/get_beatmaps", params=query)
         if len(r.json()) > 0:
             response_json = r.json()[0]
@@ -33,14 +33,19 @@ class OsuApi:
         pp = response_json['pp_raw']
         rank = response_json['pp_rank']
         playcount = response_json['playcount']
-        return "User " + username + " is rank " + rank + " with " + pp + " pp and " + playcount + " playcount." 
+        return "User " + username + " is rank " + rank + " with " + pp + " pp and " + playcount + " playcount."
+
+    def user_rank(self):
+        user_id = config['OSU']['USER_ID']
+        query = { "k": self.api_key, "u": user_id}
+        r = requests.post(self.api + "/get_user", params=query)
+        response_json = r.json()[0]
+        rank = response_json['pp_rank']
+        return "Hylebus is rank #"+rank
 
     def is_beatmap(self, line):
-        if "osu.ppy.sh/beatmapsets" in line:
+        if "osu.ppy.sh/s/" or "osu.ppy.sh/beatmapsets/" in line:
             for word in line.split():
-                if "osu.ppy.sh/beatmapsets" in word:
-                    beatmapset_id = word.split("/")[-2].split("#")[0]
-                    beatmap_id = word.split("/")[-1]
-                    #print(beatmapset_id)
-                    return [beatmapset_id, beatmap_id]
+                if "osu.ppy.sh/s/" or "osu.ppy.sh/beatmapsets/" in word:
+                    return word.split("/")[-1]
         return None

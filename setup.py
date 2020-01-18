@@ -12,7 +12,15 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/cduongt/hylebot-reborn",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(where='hylebot'),
+    package_dir={
+    '': 'hylebot',
+    },
+    install_requires=[
+          'irc',
+          'redis',
+          'requests'
+      ],
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
