@@ -44,8 +44,8 @@ class OsuApi:
         return "Hylebus is rank #"+rank
 
     def is_beatmap(self, line):
-        if "osu.ppy.sh/s/" or "osu.ppy.sh/beatmapsets/" in line:
+        if "osu.ppy.sh/s/" in line or "osu.ppy.sh/beatmapsets/" in line:
             for word in line.split():
-                if "osu.ppy.sh/s/" or "osu.ppy.sh/beatmapsets/" in word:
+                if "osu.ppy.sh/s/" in word or "osu.ppy.sh/beatmapsets/" in word:
                     return word.split("/")[-1]
         return None
