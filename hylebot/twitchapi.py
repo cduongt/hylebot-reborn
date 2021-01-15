@@ -32,7 +32,7 @@ class TwitchApi:
                         user_follow['followed_at'])
                     today = datetime.datetime.now(timezone.utc)
 
-                    return str(round((today - follow_date) / datetime.timedelta(days=1)))
+                    return follower_username + " is following Hylebus for " + str(round((today - follow_date) / datetime.timedelta(days=1))) + " days."
 
                 else:
                     return "User is not following channel."
