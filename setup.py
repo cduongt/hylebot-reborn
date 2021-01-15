@@ -19,7 +19,7 @@ setuptools.setup(
     install_requires=[
           'irc',
           'redis',
-          'requests'
+          'requests',
           'python-dateutil'
       ],
     classifiers=(
