@@ -2,6 +2,7 @@ import json
 import requests
 from hylebot.config import config
 import datetime
+import dateutil.parser
 
 
 class TwitchApi:
@@ -19,14 +20,14 @@ class TwitchApi:
 
         if (follower_id != None):
             r = requests.get(self.api_url + "/users/follows?from_id=" +
-                              follower_id + "&to_id=" + self.user_id, headers=self.headers)
+                             follower_id + "&to_id=" + self.user_id, headers=self.headers)
 
             if len(r.json()) > 0:
                 response_data = r.json()['data']
 
                 if len(response_data) > 0:
                     user_follow = response_data[0]
-                    follow_date = datetime.datetime.fromisoformat(
+                    follow_date = dateutil.parser.parse(
                         user_follow['followed_at'])
                     today = datetime.datetime.today()
 
@@ -39,7 +40,7 @@ class TwitchApi:
 
     def get_user_id(self, username):
         r = requests.get(self.api_url + "/users?login=" +
-                          username, headers=self.headers)
+                         username, headers=self.headers)
 
         if len(r.json()) > 0:
             response_data = r.json()['data'][0]

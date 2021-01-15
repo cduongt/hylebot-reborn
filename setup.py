@@ -20,6 +20,7 @@ setuptools.setup(
           'irc',
           'redis',
           'requests'
+          'python-dateutil'
       ],
     classifiers=(
         "Programming Language :: Python :: 3",
