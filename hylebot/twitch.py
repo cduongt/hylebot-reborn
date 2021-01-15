@@ -2,6 +2,7 @@ import irc.bot
 import irc.strings
 import time
 from hylebot.osu import OsuApi
+from hylebot.twitchapi import TwitchApi
 from hylebot.message import Message
 
 class TwitchBot(irc.bot.SingleServerIRCBot):
@@ -60,6 +61,9 @@ class TwitchBot(irc.bot.SingleServerIRCBot):
             if command == "!osurank":
                 osu_api = OsuApi()
                 self.connection.privmsg(self.channel, osu_api.user_rank())
+            if command == "!followage":
+                twitch_api = TwitchApi()
+                self.connection.privmsg(self.channel, twitch_api.get_follow_age(event.source.nick))
             if self.db.get(command):
                 self.connection.privmsg(self.channel, self.db.get(command))
 
