@@ -2,6 +2,7 @@ import json
 import requests
 from hylebot.config import config
 import datetime
+from datetime import timezone
 import dateutil.parser
 
 
@@ -29,7 +30,7 @@ class TwitchApi:
                     user_follow = response_data[0]
                     follow_date = dateutil.parser.parse(
                         user_follow['followed_at'])
-                    today = datetime.datetime.today()
+                    today = datetime.datetime.now(timezone.utc)
 
                     return (today - follow_date) / datetime.timedelta(days=1)
 
