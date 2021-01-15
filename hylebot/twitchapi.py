@@ -32,7 +32,7 @@ class TwitchApi:
                         user_follow['followed_at'])
                     today = datetime.datetime.now(timezone.utc)
 
-                    return (today - follow_date) / datetime.timedelta(days=1)
+                    return str(round((today - follow_date) / datetime.timedelta(days=1)))
 
                 else:
                     return "User is not following channel."
