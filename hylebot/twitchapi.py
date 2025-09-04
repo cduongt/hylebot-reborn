@@ -20,22 +20,19 @@ class TwitchApi:
         follower_id = self.get_user_id(follower_username)
 
         if (follower_id != None):
-            r = requests.get(self.api_url + "/users/follows?from_id=" +
-                             follower_id + "&to_id=" + self.user_id, headers=self.headers)
+            r = requests.get(self.api_url + "/channels/followers?broadcaster_id=" +
+                             self.user_id + "&user_id=" + follower_id, headers=self.headers)
+            
+            response = r.json()
+            if 'data' in response and len(response['data']) > 0:
+                user_follow = response['data'][0]
+                follow_date = dateutil.parser.parse(
+                    user_follow['followed_at'])
+                today = datetime.datetime.now(timezone.utc)
 
-            if len(r.json()) > 0:
-                response_data = r.json()['data']
-
-                if len(response_data) > 0:
-                    user_follow = response_data[0]
-                    follow_date = dateutil.parser.parse(
-                        user_follow['followed_at'])
-                    today = datetime.datetime.now(timezone.utc)
-
-                    return follower_username + " is following Hylebus for " + str(round((today - follow_date) / datetime.timedelta(days=1))) + " days."
-
-                else:
-                    return "User is not following channel."
+                return follower_username + " is following Hylebus for " + str(round((today - follow_date) / datetime.timedelta(days=1))) + " days."
+            else:
+                return "User is not following channel."
 
         return "Something is broken with Twitch."
 
@@ -43,9 +40,9 @@ class TwitchApi:
         r = requests.get(self.api_url + "/users?login=" +
                          username, headers=self.headers)
 
-        if len(r.json()) > 0:
-            response_data = r.json()['data'][0]
-
+        response = r.json()
+        if 'data' in response and len(response['data']) > 0:
+            response_data = response['data'][0]
             return response_data['id']
 
         return None

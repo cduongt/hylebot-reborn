@@ -1,4 +1,4 @@
-FROM python:alpine3.7
+FROM python:alpine3.21
 COPY . /app/
 WORKDIR /app/
 RUN pip install -e .

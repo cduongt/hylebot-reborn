@@ -1,6 +1,7 @@
 import hylebot.twitch
 import irc.bot
 import sys
+import os
 from hylebot.config import config
 from hylebot.database import Database
 
@@ -12,7 +13,10 @@ class Server:
         self.nickname = config['SERVER']['NICKNAME']
         self.channels = config['SERVER']['CHANNELS']
         self.token = config['SERVER']['TOKEN']
-        self.database = Database(config['DATABASE']['HOST'], config['DATABASE']['PORT'], config['DATABASE']['DB'])
+        redis_host = os.environ.get('REDIS_HOST')
+        redis_port = os.environ.get('REDIS_PORT')
+        redis_db = os.environ.get('REDIS_DB')
+        self.database = Database(redis_host, redis_port, redis_db)
         self.mods = [mod.lower() for mod in config['SERVER']['MODS'].split(",")]
 
     def connect(self):

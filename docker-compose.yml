@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  hylebot:
+    build: .
+    container_name: hylebot-app
+    depends_on:
+      - redis
+    volumes:
+      - ./hylebot.ini:/app/hylebot.ini
+    restart: unless-stopped
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DB=0
+
+  redis:
+    image: redis:7-alpine
+    container_name: hylebot-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/redis
+
+volumes:
+  redis_data:
